@@ -1,40 +1,49 @@
-# BAR LuaUI Widgets
+# Square Area Reclaim
 
-A small collection of LuaUI widgets for [Beyond All Reason](https://www.beyondallreason.info/).
+A LuaUI widget for [Beyond All Reason](https://www.beyondallreason.info/) that adds a **square** area-reclaim gesture as an alternative to the engine's circular one.
 
 ## Install
 
-Drop any `.lua` file into your local BAR widgets directory:
+Drop `cmd_square_area_reclaim.lua` into your local BAR widgets directory:
 
 ```
 <BAR install>/data/LuaUI/Widgets/
 ```
 
-Then enable it in-game via the widget list (default hotkey: **F11**) — search for the widget name and toggle it on.
+Then enable it in-game via the widget list (default hotkey: **F11**) — search for "Square Area Reclaim" and toggle it on.
 
-## Widgets
+## Usage
 
-| File | Description |
-|---|---|
-| `cmd_square_area_reclaim.lua` | While the Reclaim cursor (E) is active, **right-click-drag** to reclaim everything inside a grid-snapped square. Targets are reclaimed closest-to-center first. Modifiers: `SHIFT` queues orders, `ALT` (while hovering a unit on press) restricts to that unit-type, `CTRL` includes non-autoreclaimable features. If the entire selection is immobile builders (nano turrets / factories), each one only gets targets within its own build range. |
-| `cmd_smart_resurrect.lua` | Reclaims heaps and resurrects wrecks using TSP-optimized pathing. |
-| `cmd_protective_guard_v2.2.lua` | Selected units guard rather than follow vulnerable units. |
-| `cmd_area_rep_ignore_comm.lua` | Area repair excluding commanders. |
-| `ImprovedTargeting.lua` | Auto-target priority — keeps high-value units (snipers, Banth, etc.) from wasting shots on cheap chaff. |
-| `Overwatch (pausereclaim).lua` | Pauses the game when allied units are reclaimed, dgunned, or mass self-destructed. |
-| `buildpower_radius.lua` | Draws build-range circles for selected builders. |
-| `gui_selected_weapon_range.lua` | Weapon range overlay for selected units. |
-| `nano_check.lua` | Nano turret coverage helper. |
-| `pingwheel.lua` | Hold a hotkey (default Alt+F) to bring up a radial ping menu for commands and chat messages. |
-| `reclaim_field_highlight.lua` | Visualizes nearby reclaimable fields. |
-| `shadow_cursors.lua` | Shows ally cursor positions. |
-| `unit_firing_angle.lua` | Displays firing-angle indicators. |
-| `unit_last_com_tracker.lua` | Tracks last known commander positions. |
+1. Select one or more builders.
+2. Press **E** to bring up the Reclaim cursor.
+3. **Right-click and drag** to size a square. Drag distance snaps to BAR's 16-elmo build grid.
+4. Release the right mouse button — every reclaimable feature and unit inside the square is queued for reclaim, ordered closest-to-center first.
 
-## Notes
+A tiny right-click (drag less than one grid unit) just cancels the Reclaim cursor like normal.
 
-Widgets in this folder come from a mix of authors and licenses (GPL, public domain, etc.). See each widget's `widget:GetInfo()` block for author and license info.
+## Modifier keys
+
+Held at release (except **ALT**, which is also captured at press time for unit-type detection):
+
+| Modifier | Effect | Square tint |
+|---|---|---|
+| (none) | Standard reclaim — features (autoreclaimable only) + units | Green |
+| **SHIFT** | Queues all the orders after current commands | (any color) |
+| **ALT** + hovering a unit on press | Reclaims **only** units of that type inside the square; ignores features | Orange |
+| **CTRL** | Includes non-autoreclaimable features (e.g. dragon's teeth) | Blue |
+
+Combos work the way you'd expect: SHIFT + ALT queues a unit-type sweep, SHIFT + CTRL queues a force-reclaim sweep, and so on.
+
+## Immobile builders
+
+If **every** unit in your selection is an immobile builder (nano turrets, factories — anything with `buildSpeed > 0` and no movement), each one is given only the targets within its own `buildDistance`. This keeps a single nano turret from queueing reclaim orders for the whole square when most of it is out of reach.
+
+If the selection contains **any** mobile builder, this filter is skipped and every selected unit gets every target — the mobile units handle the far stuff and the engine ignores out-of-range orders for the turrets.
 
 ## Reloading after edits
 
-In-game, run `/luaui reload` to reload all widgets, or `/widget reload "Widget Name"` to reload just one.
+In-game, run `/luaui reload` to reload all widgets, or `/widget reload "Square Area Reclaim"` to reload just this one.
+
+## Author
+
+Zack Cheang — GNU GPL v2 or later.
